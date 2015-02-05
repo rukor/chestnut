@@ -6,11 +6,12 @@
 
 (enable-console-print!)
 
-(figwheel/watch-and-reload
-  :websocket-url "ws://localhost:3449/figwheel-ws"
-  :jsload-callback (fn []
-                     (core/main)))
+(def hostname (-> js/window .-location .-hostname))
 
-(weasel/connect "ws://localhost:9001" :verbose true :print #{:repl :console})
+(figwheel/watch-and-reload
+  :websocket-url (str "ws://" hostname ":3449/figwheel-ws")
+  :jsload-callback (fn [] (core/main)))
+
+(weasel/connect (str "ws://" hostname ":9001") :verbose true :print #{:repl :console})
 
 (core/main)
