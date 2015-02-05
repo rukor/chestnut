@@ -53,7 +53,7 @@
 
                    :dependencies [[figwheel "0.2.1-SNAPSHOT"]
                                   [figwheel-sidecar "0.2.1-SNAPSHOT"]
-                                  [com.cemerick/piggieback "0.1.3"]
+                                  [com.cemerick/piggieback "0.1.5"]
                                   [weasel "0.5.0"]{{{project-dev-deps}}}]
 
                    :repl-options {:init-ns {{project-ns}}.server
