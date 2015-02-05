@@ -76,7 +76,6 @@
                                                           :source-map    "resources/public/js/test.js.map"
                                                           :optimizations :whitespace
                                                           :pretty-print  false}}}}}
-
              :uberjar {:source-paths ["env/prod/clj"]
                        :hooks [{{{project-uberjar-hooks}}}]
                        :env {:production true}
