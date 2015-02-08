@@ -11,17 +11,13 @@
 (def is-dev? (env :is-dev))
 
 (def inject-devmode-html
-  (comp
-     (set-attr :class "is-dev")
-     #_(prepend (html [:script {:type "text/javascript" :src "/js/out/goog/base.js"}]))
-     #_(prepend (html [:script {:type "text/javascript" :src "/react/react.js"}]))
-     #_(append  (html [:script {:type "text/javascript"} "goog.require('{{project-goog-module}}.main')"]))
-     ))
+  (set-attr :class "is-dev"))
 
 (defn browser-repl []
-  (let [repl-env (weasel/repl-env :ip "0.0.0.0" :port 9001)]
+  (let [repl-env (weasel/repl-env :ip "0.0.0.0" :port 9001)
+        repl-opt {}]
     (piggieback/cljs-repl :repl-env repl-env)
-    (piggieback/cljs-eval repl-env '(in-ns '{{project-ns}}.core) {})))
+    (piggieback/cljs-eval repl-opts repl-env '(in-ns '{{project-ns}}.core) {})))
 
 (defn start-figwheel []
   (let [server (fig/start-server { :css-dirs ["resources/public/css"] })
