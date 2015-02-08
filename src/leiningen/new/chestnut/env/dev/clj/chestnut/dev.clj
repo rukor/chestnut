@@ -15,7 +15,7 @@
 
 (defn browser-repl []
   (let [repl-env (weasel/repl-env :ip "0.0.0.0" :port 9001)
-        repl-opt {}]
+        repl-opts {}]
     (piggieback/cljs-repl :repl-env repl-env)
     (piggieback/cljs-eval repl-opts repl-env '(in-ns '{{project-ns}}.core) {})))
 
