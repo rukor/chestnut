@@ -25,10 +25,11 @@
   :uberjar-name "{{{name}}}.jar"
 
   :cljsbuild {:builds {:app {:source-paths ["src/cljs"{{{cljx-cljsbuild-spath}}}]
-                             :compiler {:output-to     "resources/public/js/app.js"
+                             :compiler {:main          {{{name}}}.main
+                                        :output-to     "resources/public/js/app.js"
                                         :output-dir    "resources/public/js/out"
                                         :source-map    "resources/public/js/out.js.map"
-                                        :preamble      ["react/react.min.js"]
+                                        :asset-path    "js/out"               
                                         :optimizations :none
                                         :pretty-print  true}}}}{{#less?}}
 
@@ -73,7 +74,6 @@
                                                :compiler {:output-to     "resources/public/js/app_test.js"
                                                           :output-dir    "resources/public/js/test"
                                                           :source-map    "resources/public/js/test.js.map"
-                                                          :preamble      ["react/react.min.js"]
                                                           :optimizations :whitespace
                                                           :pretty-print  false}}}}}
 
