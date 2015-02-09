@@ -29,7 +29,7 @@
                                         :output-to     "resources/public/js/app.js"
                                         :output-dir    "resources/public/js/out"
                                         :source-map    "resources/public/js/out.js.map"
-                                        :asset-path    "js/out"               
+                                        :asset-path    "/js/out"
                                         :optimizations :none
                                         :pretty-print  true}}}}{{#less?}}
 
