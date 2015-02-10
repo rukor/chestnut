@@ -4,7 +4,15 @@
             [cljs.core.async :refer [put!]]
             [weasel.repl :as weasel]))
 
-(enable-console-print!)
+{{#isomorphic?}}
+(if (exists? js/console)
+{{/isomorphic?}}
+ (enable-console-print!)
+{{#isomorphic?}}
+ (set-print-fn! js/print))
+
+(defn ^:export start []
+{{/isomorphic?}}
 
 (def hostname (-> js/window .-location .-hostname))
 
@@ -15,3 +23,7 @@
 (weasel/connect (str "ws://" hostname ":9001") :verbose true :print #{:repl :console})
 
 (core/main)
+
+{{#isomorphic?}}
+)
+{{/isomorphic?}}

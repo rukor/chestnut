@@ -27,6 +27,11 @@
                                      :output-to            "resources/public/js/app.js"
                                      :output-dir           "resources/public/js/out"
                                      :asset-path           "/js/out"
+{{#isomorphic?}}
+                                     ; so we load the entire file at once into nashorn/njs
+                                     ; slower in dev, but in prod should be fast.
+                                     :optimizations        :whitespace
+{{/isomorphic?}}
                                      :source-map           "resources/public/js/out.js.map"
                                      :source-map-timestamp true
                                      }}]

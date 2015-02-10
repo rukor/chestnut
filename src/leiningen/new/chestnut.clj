@@ -20,7 +20,7 @@
   (wrap-indent identity n list))
 
 (def valid-options
-  ["http-kit" "site-middleware" "om-tools" "cljx" "less" "sass" "speclj"])
+  ["http-kit" "site-middleware" "om-tools" "cljx" "less" "sass" "speclj" "isomorphic"])
 
 (doseq [opt valid-options]
   (eval
@@ -41,7 +41,8 @@
 (defn project-clj-deps [opts]
   (cond-> []
           (http-kit? opts) (conj "http-kit \"2.1.19\"")
-          (om-tools? opts) (conj "prismatic/om-tools \"0.3.10\"")))
+          (om-tools? opts) (conj "prismatic/om-tools \"0.3.10\"")
+          (isomorphic? opts) (conj "fl-lib \"0.3.0-SNAPSHOT\"")))
 
 (defn project-dev-deps [opts]
   (cond-> []
@@ -106,6 +107,8 @@
    :sass?                (fn [block] (if (sass? opts) (str "\n" block) ""))
    :less?                (fn [block] (if (less? opts) (str "\n" block) ""))
    :cljx?                (fn [block] (if (cljx? opts) (str "\n" block) ""))
+   :isomorphic?          (fn [block] (if (isomorphic? opts) (str "" block) ""))
+   :not-isomorphic?      (fn [block] (if (isomorphic? opts) "" block))
 
    ;; testing features
    :speclj?              (fn [block] (if (speclj? opts) (str "\n" block) ""))
