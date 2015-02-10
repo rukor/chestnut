@@ -42,7 +42,8 @@
   (cond-> []
           (http-kit? opts) (conj "http-kit \"2.1.19\"")
           (om-tools? opts) (conj "prismatic/om-tools \"0.3.10\"")
-          (isomorphic? opts) (conj "fl-lib \"0.3.0-SNAPSHOT\"")))
+          (isomorphic? opts) (conj "fl-lib \"0.3.0-SNAPSHOT\""
+                                   "com.keminglabs/cljx \"0.5.0\" :exclusions [org.clojure/clojure]")))
 
 (defn project-dev-deps [opts]
   (cond-> []
@@ -149,7 +150,6 @@
           (less? opts) (conj "src/less/style.less")
           (sass? opts) (conj "src/scss/style.scss")
           (not (or (less? opts) (sass? opts))) (conj "resources/public/css/style.css")
-          (cljx? opts) (conj "src/cljx/chestnut/core.cljx")
           (speclj? opts) (conj "bin/speclj"
                              "spec/clj/chestnut/server_spec.clj"
                              "spec/cljs/chestnut/core_spec.cljs")

@@ -24,7 +24,7 @@
 
   :uberjar-name "{{{name}}}.jar"
 
-  :cljsbuild {:builds {:app {:source-paths ["src/cljs"{{{cljx-cljsbuild-spath}}}]
+  :cljsbuild {:builds {:app {:source-paths ["src/cljs" {{{cljx-cljsbuild-spath}}}]
                              :compiler {:main          {{{name}}}.main
                                         :output-to     "resources/public/js/app.js"
                                         :output-dir    "resources/public/js/out"

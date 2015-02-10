@@ -1,11 +1,10 @@
 (ns {{project-ns}}.server
   (:require [clojure.java.io :as io]
-            [{{project-ns}}.dev :refer [is-dev? inject-devmode-html browser-repl start-figwheel{{less-sass-refer}}]]
-{{#isomorphic?}}
+            [{{project-ns}}.dev :refer [is-dev? inject-devmode-html browser-repl start-figwheel{{less-sass-refer}}]] {{#isomorphic?}}
             [fl.lib.server.ssr.render :refer [render-fn]]
             [fl.lib.server.ssr.state :refer [route-state-handler]]
-            [domkm.silk.serve :refer [ring-handler]]
-{{/isomorphic?}}
+            [domkm.silk :as silk]
+            [domkm.silk.serve :refer [ring-handler]]{{/isomorphic?}}
             [compojure.core :refer [GET defroutes]]
             [compojure.route :refer [resources]]
             [net.cgrand.enlive-html :refer [deftemplate content html-content]]
@@ -14,33 +13,37 @@
             [ring.middleware.defaults :refer [wrap-defaults {{ring-defaults}}]]
             [environ.core :refer [env]]{{{server-clj-requires}}}))
 
-(deftemplate page (io/resource "index.html") [{{#isomorphic?}}renderer state-string{{/isomorphic?}}]
+(deftemplate page (io/resource "index.html") [{{#isomorphic?}}state-string rendered{{/isomorphic?}}]
   [:body]
   (if is-dev? inject-devmode-html identity)
   {{#isomorphic?}}
 
-  [:script#init-state]
+  [:script#app-state]
   (content state-string)
 
   [:div#app]
-  (html-content (renderer state-string))
-  {{/isomorphic?}}
-  )
+  (html-content rendered){{/isomorphic?}})
 
 {{#not-isomorphic?}}
 (def handler page)
 {{/not-isomorphic?}}
-
 {{#isomorphic?}}
-(def app-routes nil)
+ (def app-routes
+   {:home [[]]
+    :page [["page" :page-id]]})
+
+(defn params-fn
+ [request]
+ (apply dissoc (:params request)
+        ::silk/url ::silk/routes (keys request)))
+
+(defn route-handler [f]
+ (route-state-handler page f :params-fn params-fn))
 
 (def handler
-  (->> (render-fn "{{name}}.core"
-                  "render_to_string"
-                  :initial-pool-size 5)
-       (partial page)
-       (route-state-handler)
-       (ring-handler app-routes)))
+ (->> (render-fn "{{name}}.core" "render_to_string" :initial-pool-size 3)
+      (route-handler)
+      (ring-handler app-routes)))
 {{/isomorphic?}}
 
 (defroutes routes
