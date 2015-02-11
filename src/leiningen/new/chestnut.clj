@@ -149,7 +149,7 @@
           (less? opts) (conj "src/less/style.less")
           (sass? opts) (conj "src/scss/style.scss")
           (not (or (less? opts) (sass? opts))) (conj "resources/public/css/style.css")
-          (cljx? opts) (conj "src/cljx/chestnut/core.cljx")
+          (cljx? opts) (conj "src/cljx/chestnut/other.cljx")
           (speclj? opts) (conj "bin/speclj"
                              "spec/clj/chestnut/server_spec.clj"
                              "spec/cljs/chestnut/core_spec.cljs")

@@ -1,7 +1,7 @@
 (ns {{project-ns}}.server
   (:require [clojure.java.io :as io]
             [{{project-ns}}.dev :refer [is-dev? inject-devmode-html browser-repl start-figwheel{{less-sass-refer}}]] {{#isomorphic?}}
-            [fl.lib.server.ssr.render :refer [render-fn]]
+            [fl.lib.server.ssr.render :refer [render-fn-single]]
             [fl.lib.server.ssr.state :refer [route-state-handler]]
             [domkm.silk :as silk]
             [domkm.silk.serve :refer [ring-handler]]{{/isomorphic?}}
@@ -47,7 +47,7 @@
 {{/isomorphic?}}
 
 (defn make-routes []
-  (let [handler (app-handler)
+  (let [handler (app-handler)]
     (compojure.core/routes
          (resources "/")
          (resources "/react" {:root "react"})
