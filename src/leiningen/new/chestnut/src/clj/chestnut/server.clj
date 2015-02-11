@@ -25,7 +25,7 @@
   (html-content rendered){{/isomorphic?}})
 
 {{#not-isomorphic?}}
-(def handler page)
+(defn app-handler [] page)
 {{/not-isomorphic?}}
 {{#isomorphic?}}
  (def app-routes
@@ -40,26 +40,29 @@
 (defn route-handler [f]
  (route-state-handler page f :params-fn params-fn))
 
-(def handler
- (->> (render-fn "{{name}}.core" "render_to_string" :initial-pool-size 3 :is-dev? is-dev?)
+(defn app-handler []
+ (->> (render-fn-single "{{name}}.core" "render_to_string" :is-dev? is-dev?)
       (route-handler)
       (ring-handler app-routes)))
 {{/isomorphic?}}
 
-(defroutes routes
-  (resources "/")
-  (resources "/react" {:root "react"})
-  (GET "/*" [] handler))
+(defn make-routes []
+  (let [handler (app-handler)
+    (compojure.core/routes
+         (resources "/")
+         (resources "/react" {:root "react"})
+         (GET "/*" [] handler))))
 
-(def http-handler
-  (if is-dev?
-    (reload/wrap-reload (wrap-defaults #'routes {{ring-defaults}}))
-    (wrap-defaults routes {{ring-defaults}})))
+(defn http-handler []
+  (let [routes (make-routes)]
+   (if is-dev?
+      (reload/wrap-reload (wrap-defaults routes {{ring-defaults}}))
+      (wrap-defaults routes {{ring-defaults}}))))
 
 (defn run-web-server [& [port]]
   (let [port (Integer. (or port (env :port) 10555))]
     (print "Starting web server on port" port ".\n")
-    ({{server-command}} http-handler {:port port :join? false})))
+    ({{server-command}} (http-handler) {:port port :join? false})))
 
 (defn run-auto-reload [& [port]]
   (auto-reload *ns*)
