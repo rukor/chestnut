@@ -9,7 +9,7 @@
   :test-paths ["spec/clj"]
 
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-2760" :scope "provided"]
+                 [org.clojure/clojurescript "0.0-2816" :scope "provided"]
                  [ring "1.3.2"]
                  [ring/ring-defaults "0.1.3"]
                  [compojure "1.3.1"]
@@ -52,15 +52,16 @@
   :profiles {:dev {:source-paths ["env/dev/clj"]
                    :test-paths ["test/clj"]
 
-                   :dependencies [[figwheel "0.2.1-SNAPSHOT"]
-                                  [figwheel-sidecar "0.2.1-SNAPSHOT"]
-                                  [com.cemerick/piggieback "0.1.5"]
-                                  [weasel "0.5.0"]{{{project-dev-deps}}}]
+                   :dependencies [[figwheel "0.2.3-SNAPSHOT"]
+                                  [figwheel-sidecar "0.2.3-SNAPSHOT"]
+                                  [com.cemerick/piggieback "0.1.6-SNAPSHOT"]
+                                  [weasel "0.6.0-SNAPSHOT"]
+                                  [leiningen "2.5.0"]{{{project-dev-deps}}}]
 
                    :repl-options {:init-ns {{project-ns}}.server
                                   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl{{{nrepl-middleware}}}]}
 
-                   :plugins [[lein-figwheel "0.2.1-SNAPSHOT"]{{{project-dev-plugins}}}]
+                   :plugins [[lein-figwheel "0.2.3-SNAPSHOT"]{{{project-dev-plugins}}}]
 
                    :figwheel {:http-server-root "public"
                               :server-port 3449

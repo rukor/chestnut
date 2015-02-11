@@ -6,7 +6,8 @@
             [figwheel-sidecar.auto-builder :as fig-auto]
             [figwheel-sidecar.core :as fig]
             [clojurescript-build.auto :as auto]
-            [clojure.java.shell :refer [sh]]))
+            [clojure.java.shell :refer [sh]]
+            [leiningen.core.main :as lein]))
 
 (def is-dev? (env :is-dev))
 
@@ -20,7 +21,9 @@
     (piggieback/cljs-eval repl-opts repl-env '(in-ns '{{project-ns}}.core) {})))
 
 (defn start-figwheel []
-  (let [server (fig/start-server { :css-dirs ["resources/public/css"] })
+  (future
+    (lein/-main ["figwheel"]))
+  #_(let [server (fig/start-server { :css-dirs ["resources/public/css"] })
         config {:builds [{:id "dev"
                           :source-paths  ["env/dev/cljs" "src/cljs"]
                           :compiler {:main                 '{{name}}.main

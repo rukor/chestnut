@@ -41,7 +41,7 @@
  (route-state-handler page f :params-fn params-fn))
 
 (def handler
- (->> (render-fn "{{name}}.core" "render_to_string" :initial-pool-size 3)
+ (->> (render-fn "{{name}}.core" "render_to_string" :initial-pool-size 3 :is-dev? is-dev?)
       (route-handler)
       (ring-handler app-routes)))
 {{/isomorphic?}}
