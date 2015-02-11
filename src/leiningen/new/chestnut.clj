@@ -63,7 +63,7 @@
 (defn project-dev-plugins [opts]
   (cond-> []
           (speclj? opts) (conj "speclj \"3.1.0\"")
-          (cljx? opts) (conj "com.keminglabs/cljx \"0.5.0\" :exclusions [org.clojure/clojure]")))
+          (cljx? opts) (conj "com.keminglabs/cljx \"0.4.0\" :exclusions [org.clojure/clojure]")))
 
 (defn project-nrepl-middleware [opts]
   (cond-> []
