@@ -42,7 +42,7 @@
   (cond-> []
           (http-kit? opts) (conj "http-kit \"2.1.19\"")
           (om-tools? opts) (conj "prismatic/om-tools \"0.3.10\"")
-          (isomorphic? opts) (conj "fl-lib \"0.3.0-SNAPSHOT\" :exclusions [\"liberator\"]")))
+          (isomorphic? opts) (conj "fl-lib \"0.3.0-SNAPSHOT\" :exclusions [liberator]")))
 
 (defn project-dev-deps [opts]
   (cond-> []
