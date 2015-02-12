@@ -17,12 +17,14 @@
                  [org.omcljs/om "0.8.8"]
                  [environ "1.0.0"]{{{project-clj-deps}}}]
 
-  :plugins [[lein-cljsbuild "1.0.3"]
+  :plugins [[lein-cljsbuild "1.0.4"]
             [lein-environ "1.0.0"]{{{project-plugins}}}]
 
   :min-lein-version "2.5.0"
 
   :uberjar-name "{{{name}}}.jar"
+
+  :clean-targets ^{:protect false} ["resources/public/js"]
 
   :cljsbuild {:builds {:app {:source-paths ["src/cljs" {{{cljx-cljsbuild-spath}}}]
                              :compiler {:main          {{{name}}}.main

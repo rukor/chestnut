@@ -1,11 +1,10 @@
 (ns {{project-ns}}.core
   (:require [om.core :as om :include-macros true]{{{core-cljs-requires}}}{{#isomorphic?}}
-            [fl.lib.client.router :refer [path-for]]
-            [fl.lib.client.router.silk :refer [silk-router]]
-            [fl.lib.client.util :refer [deserialise]]
-            [fl.lib.client.util.dom :refer [by-id]]
-            [fl.lib.client.util.om :refer [link]]
-            [fl.lib.client.router.navigation :refer [make-navigator]]{{/isomorphic?}}))
+            [{{project-ns}}.routes :refer [app-routes]]
+            [com.firstlinq.om-ssr.state :refer [get-state]]
+            [com.firstlinq.om-ssr.state.transit :refer [deserialise]]
+            [com.firstlinq.om-ssr.router :refer [path-for path-exists? navigate-to] :refer-macros [link]]
+            [com.firstlinq.om-ssr.router.silk :refer [silk-router]]{{/isomorphic?}}))
 
 (defonce app-state (atom {:text "Hello Chestnut!"}))
 
@@ -17,22 +16,21 @@
              (dom/h1 {{#not-om-tools?}}nil {{/not-om-tools?}}(:text app)))))
 {{/not-isomorphic?}}
 {{#isomorphic?}}
- (def app-routes
-   {:home [[]]
-    :page [["page" :page-id]]})
 
- (defonce router
-   (silk-router app-routes (fn [route-id route-map]
-                  (swap! app-state assoc :route-id route-id :params route-map))))
+(defonce router app-routes)
 
-(defn menu [data owner {:keys [navigator router]}]
+(defmethod get-state :default [route-id route-params]
+   (swap! app-state assoc :route-id route-id :params route-params))
+
+(defn menu [data owner {:keys [router]}]
   (reify om/IRender
      (render [_]
-       (let [link (partial link navigator)]
-          (dom/ul nil
-            (dom/li nil (link {:href (path-for router :home {})} (dom/span "Home")))
-            (dom/li nil (link {:href (path-for router :page {:page-id "one"})}
-                     (dom/span nil "Page One"))))))))
+       (dom/ul nil
+               (dom/li nil (link router {:route [:home {}]} (dom/span "Home")))
+               (dom/li nil (link router {:href (path-for router :page {:page-id "one"})}
+                                 (dom/span nil "Page One")))
+               (dom/li nil (link router {:route [:page {:page-id "two"}]}
+                                 (dom/span nil "Page Two")))))))
 
 (defn home [data owner]
   (reify om/IRender
@@ -51,8 +49,7 @@
      om/IRender
      (render [_]
              (dom/div
-               (om/build menu {} {:opts {:navigator (make-navigator router)
-                                         :router    router}})
+               (om/build menu {} {:opts {:router router}})
                (when-let [view (get pages (:route-id app))]
                          (om/build view app {}))))))
 
@@ -66,9 +63,12 @@
 
 (defn main []
 {{#isomorphic?}}
-  (->> (by-id "app-state") (.-textContent) (deserialise) (reset! app-state))
+  (->> (.getElementById js/document "app-state")
+       (.-textContent)
+       (deserialise)
+       (reset! app-state))
 {{/isomorphic?}}
   (om/root
     app-view
     app-state
-    {:target (by-id "app")}))
+    {:target (.getElementById js/document "app")}))

@@ -1,10 +1,12 @@
 (ns {{project-ns}}.server
   (:require [clojure.java.io :as io]
             [{{project-ns}}.dev :refer [is-dev? inject-devmode-html browser-repl start-figwheel{{less-sass-refer}}]] {{#isomorphic?}}
-            [fl.lib.server.ssr.render :refer [render-fn-single]]
-            [fl.lib.server.ssr.state :refer [route-state-handler]]
-            [domkm.silk :as silk]
-            [domkm.silk.serve :refer [ring-handler]]{{/isomorphic?}}
+            [{{project-ns}}.routes :refer [app-routes]]
+            [com.firstlinq.om-ssr.render :refer [create-render-fn]]
+            [com.firstlinq.om-ssr.ring :refer [create-ring-handler]]
+            [com.firstlinq.om-ssr.state.transit :refer [serialise deserialise]]
+            ;; TODO make silk optional (bidi could be used as well)
+            [com.firstlinq.om-ssr.state.silk :refer [create-request->state]]{{/isomorphic?}}
             [compojure.core :refer [GET defroutes]]
             [compojure.route :refer [resources]]
             [net.cgrand.enlive-html :refer [deftemplate content html-content]]
@@ -13,48 +15,28 @@
             [ring.middleware.defaults :refer [wrap-defaults {{ring-defaults}}]]
             [environ.core :refer [env]]{{{server-clj-requires}}}))
 
-(deftemplate page (io/resource "index.html") [{{#isomorphic?}}state-string rendered{{/isomorphic?}}]
+(deftemplate page (io/resource "index.html") [{{#isomorphic?}}app-state html{{/isomorphic?}}]
   [:body]
   (if is-dev? inject-devmode-html identity)
   {{#isomorphic?}}
 
   [:script#app-state]
-  (content state-string)
+  (content app-state)
 
   [:div#app]
-  (html-content rendered){{/isomorphic?}})
+  (html-content html){{/isomorphic?}})
 
-{{#not-isomorphic?}}
-(defn app-handler [] page)
-{{/not-isomorphic?}}
-{{#isomorphic?}}
- (def app-routes
-   {:home [[]]
-    :page [["page" :page-id]]})
-
-(defn params-fn
- [request]
- (apply dissoc (:params request)
-        ::silk/url ::silk/routes (keys request)))
-
-(defn route-handler [f]
- (route-state-handler page f :params-fn params-fn))
-
-(defn app-handler []
- (->> (render-fn-single "{{name}}.core" "render_to_string" :is-dev? is-dev?)
-      (route-handler)
-      (ring-handler app-routes)))
-{{/isomorphic?}}
-
-(defn make-routes []
-  (let [handler (app-handler)]
-    (compojure.core/routes
-         (resources "/")
-         (resources "/react" {:root "react"})
-         (GET "/*" [] handler))))
+(defn make-routes [handler]
+  (compojure.core/routes
+    (resources "/")
+    (resources "/react" {:root "react"})
+    (GET "/*" [] handler)))
 
 (defn http-handler []
-  (let [routes (make-routes)]
+  (let [req->state (create-request->state app-routes)
+        render-fn (create-render-fn "{{project-ns}}.core" "render_to_string" :is-dev? is-dev?)
+        handler-fn (create-ring-handler req->state render-fn serialise page)
+        routes (make-routes handler-fn)]
    (if is-dev?
       (reload/wrap-reload (wrap-defaults routes {{ring-defaults}}))
       (wrap-defaults routes {{ring-defaults}}))))
