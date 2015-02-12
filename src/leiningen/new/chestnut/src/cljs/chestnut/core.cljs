@@ -17,7 +17,7 @@
 {{/not-isomorphic?}}
 {{#isomorphic?}}
 
-(defonce router app-routes)
+(defonce router (silk-router app-routes))
 
 (defmethod get-state :default [route-id route-params]
    (swap! app-state assoc :route-id route-id :params route-params))
