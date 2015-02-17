@@ -26,7 +26,7 @@
   #_(let [server (fig/start-server { :css-dirs ["resources/public/css"] })
         config {:builds [{:id "dev"
                           :source-paths  ["env/dev/cljs" "src/cljs"]
-                          :compiler {:main                 '{{name}}.main
+                          :compiler {:main                 '{{project-ns}}.main
                                      :output-to            "resources/public/js/app.js"
                                      :output-dir           "resources/public/js/out"
                                      :asset-path           "/js/out"
