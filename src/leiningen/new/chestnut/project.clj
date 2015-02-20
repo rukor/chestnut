@@ -54,16 +54,15 @@
   :profiles {:dev {:source-paths ["env/dev/clj"]
                    :test-paths ["test/clj"]
 
-                   :dependencies [[figwheel "0.2.3-SNAPSHOT"]
-                                  [figwheel-sidecar "0.2.3-SNAPSHOT"]
+                   :dependencies [[figwheel "0.2.5-SNAPSHOT"]
+                                  [figwheel-sidecar "0.2.5-SNAPSHOT"]
                                   [com.cemerick/piggieback "0.1.6-SNAPSHOT"]
-                                  [weasel "0.6.0-SNAPSHOT"]
-                                  [leiningen "2.5.0"]{{{project-dev-deps}}}]
+                                  [weasel "0.6.0-SNAPSHOT"]{{{project-dev-deps}}}]
 
                    :repl-options {:init-ns {{project-ns}}.server
                                   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl{{{nrepl-middleware}}}]}
 
-                   :plugins [[lein-figwheel "0.2.3-SNAPSHOT"]{{{project-dev-plugins}}}]
+                   :plugins [[lein-figwheel "0.2.5-SNAPSHOT"]{{{project-dev-plugins}}}]
 
                    :figwheel {:http-server-root "public"
                               :server-port 3449

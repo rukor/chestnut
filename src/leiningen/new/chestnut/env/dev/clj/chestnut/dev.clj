@@ -6,8 +6,7 @@
             [figwheel-sidecar.auto-builder :as fig-auto]
             [figwheel-sidecar.core :as fig]
             [clojurescript-build.auto :as auto]
-            [clojure.java.shell :refer [sh]]
-            [leiningen.core.main :as lein]))
+            [clojure.java.shell :refer [sh]]))
 
 (def is-dev? (env :is-dev))
 
@@ -21,20 +20,14 @@
     (piggieback/cljs-eval repl-opts repl-env '(in-ns '{{project-ns}}.core) {})))
 
 (defn start-figwheel []
-  (future
-    (lein/-main ["figwheel"]))
-  #_(let [server (fig/start-server { :css-dirs ["resources/public/css"] })
+  (let [server (fig/start-server { :css-dirs ["resources/public/css"] })
         config {:builds [{:id "dev"
-                          :source-paths  ["env/dev/cljs" "src/cljs"]
+                          :source-paths  ["{{{cljx-cljsbuild-spath}}}" "src/cljs" "env/dev/cljs"]
                           :compiler {:main                 '{{project-ns}}.main
                                      :output-to            "resources/public/js/app.js"
                                      :output-dir           "resources/public/js/out"
                                      :asset-path           "/js/out"
-{{#isomorphic?}}
-                                     ; so we load the entire file at once into nashorn/njs
-                                     ; slower in dev, but in prod should be fast.
-                                     :optimizations        :whitespace
-{{/isomorphic?}}
+                                     :optimizations        :none
                                      :source-map           "resources/public/js/out.js.map"
                                      :source-map-timestamp true
                                      }}]
