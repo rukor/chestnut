@@ -3,7 +3,7 @@
             [{{project-ns}}.routes :refer [app-routes]]
             [com.firstlinq.om-ssr.state :refer [get-state]]
             [com.firstlinq.om-ssr.state.transit :refer [deserialise]]
-            [com.firstlinq.om-ssr.router :refer [path-for path-exists? navigate-to] :refer-macros [link]]
+            [com.firstlinq.om-ssr.router :refer [path-for path-exists? navigate-to link]]
             [com.firstlinq.om-ssr.router.silk :refer [silk-router]]{{/isomorphic?}}))
 
 (defonce app-state (atom {:text "Hello Chestnut!"}))
@@ -20,7 +20,7 @@
 (defonce router (silk-router app-routes))
 
 (defmethod get-state :default [route-id route-params]
-   (swap! app-state assoc :route-id route-id :params route-params))
+   (swap! app-state assoc :route {:id route-id :params route-params}))
 
 (defn menu [data owner {:keys [router]}]
   (reify om/IRender
@@ -40,7 +40,7 @@
 (defn page [data owner]
   (reify om/IRender
      (render [_]
-       (dom/div "Page ID: " (get-in data [:params :page-id])))))
+       (dom/div "Page ID: " (get-in data [:route :params :page-id])))))
 
 (def pages {:home home :page page})
 
@@ -50,7 +50,7 @@
      (render [_]
              (dom/div
                (om/build menu {} {:opts {:router router}})
-               (when-let [view (get pages (:route-id app))]
+               (when-let [view (get pages (get-in app [:route :id]))]
                          (om/build view app {}))))))
 
 (defn ^:export render-to-string

@@ -34,7 +34,7 @@
 
 (defn http-handler []
   (let [req->state (create-request->state app-routes)
-        render-fn (create-render-fn "{{{project-ns}}}.core" "render_to_string" :is-dev? is-dev?)
+        render-fn (create-render-fn "{{{project-goog-module}}}.core" "render_to_string" :is-dev? is-dev?)
         handler-fn (create-ring-handler req->state render-fn serialise page)
         routes (make-routes handler-fn)]
    (if is-dev?
