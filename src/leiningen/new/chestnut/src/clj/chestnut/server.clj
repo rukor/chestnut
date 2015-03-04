@@ -15,13 +15,15 @@
             [ring.middleware.defaults :refer [wrap-defaults {{ring-defaults}}]]
             [environ.core :refer [env]]{{{server-clj-requires}}}))
 
-(deftemplate page (io/resource "index.html") [{{#isomorphic?}}app-state html{{/isomorphic?}}]
+(deftemplate page (io/resource "index.html") [{{#isomorphic?}}app-state serialised html{{/isomorphic?}}]
   [:body]
   (if is-dev? inject-devmode-html identity)
   {{#isomorphic?}}
 
   [:script#app-state]
-  (content app-state)
+  (content serialised)
+
+  [:title] (content (:title app-state))
 
   [:div#app]
   (html-content html){{/isomorphic?}})
